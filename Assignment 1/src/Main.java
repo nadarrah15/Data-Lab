@@ -1,11 +1,9 @@
-import java.util.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,8 +11,8 @@ public class Main {
 
 	public static void main(String args[]) throws IOException {
 		//Instantiates each data structure
-		List<Map<String, Object>> txt = readTxt("http://mas.lvc.edu/cds280/Student.txt");
-		List<Map<String, Object>> csv = readCsv("Student.csv");
+		Map<Integer, Map<String, Object>> txt = readTxt("http://mas.lvc.edu/cds280/Student.txt");
+		Map<Integer, Map<String, Object>> csv = readCsv("Student.csv");
 
 		//gives the amount of rows (a.k.a. the size) of each data structure
 		System.out.println("Student.txt size: " + txt.size());
@@ -29,15 +27,21 @@ public class Main {
 		System.out.println("Student.csv sum of the length of Address.Street column: " + columnLengthSum("Address.Street", csv));
 	}
 
-	/** method used to sum the column length of the data structure List<Map<String, Object>>
+	/** method used to sum the column length of the data structure Map<Integer, Map<String, Object>>
 	 * pre: col exists as a column in the specified dict data structure, and dict.size() > 0
 	 * post: return a sum of the lengths of the specified column
 	 */
-	static int columnLengthSum(String col, List<Map<String, Object>> dict){
+	static int columnLengthSum(String col, Map<Integer, Map<String, Object>> dict){
 		int sum = 0;
-		for(int i = 0; i < dict.size(); i++){
-			sum += ((String) dict.get(i).get(col)).length();
+		
+		for(Integer key : dict.keySet()){
+			sum += ((String) dict.get(key).get(col)).length();
 		}
+		
+		/* old version
+		 * for(int i = 0; i < dict.size(); i++){
+			sum += ((String) dict.get(i + 1000001).get(col)).length();
+		}*/
 		
 		return sum;
 	}
@@ -46,17 +50,27 @@ public class Main {
 	 * pre: dict.size() > 0, and col is a numeric column that exists in dict
 	 * post: returns the sum of all numeric values in a column
 	 */
-	static double sum(List<Map<String, Object>> dict, String col){
+	static double sum(Map<Integer, Map<String, Object>> dict, String col){
 		double sum = 0;
-		for(int i = 0; i < dict.size(); i++){
-			sum += (double) dict.get(i).get(col);
+		
+		for(Integer key : dict.keySet()){
+			sum += (double) dict.get(key).get(col);
 		}
+		
+		/* old code
+		 * for(int i = 0; i < dict.size(); i++){
+		 
+			sum += (double) dict.get(i + 1000001).get(col);
+		}*/
 		
 		return sum;
 	}
 	
+	/** checks to see if some string can be written as a double
+	 * post: returns whether a string can be parsed to a double or not
+	 */
 	static boolean isDouble(String str) {
-
+	
 		try {
 			double d = Double.parseDouble(str);
 		} 
@@ -67,81 +81,117 @@ public class Main {
 		return true;
 	}
 	
-	static List<Map<String, Object>> readTxt(String s) throws IOException {
+	/** reads a tab delimited text file and puts it into a data structure
+	 * pre: s is a string that refers to a URL which holds a text file
+	 * post: returns a List holding Maps that contain each column as a key and each row as a Map object
+	 */
+	static Map<Integer, Map<String, Object>> readTxt(String s) throws IOException { 	//static List<Map<String, Object>> readTxt(String s) throws IOException {
 		URL url = new URL(s);
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		// starts the reader at the second line
 		in.readLine();
 
-		// reads the key names and stores them
+		// reads the key names (column names) and stores them
 		BufferedReader colIn = new BufferedReader(new InputStreamReader(url.openStream()));
 		String colString = colIn.readLine();
 		colIn.close();
 		String[] col = colString.split("\t");
 
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		//instantiates the object being returned so we can add in objects
+		Map<Integer, Map<String, Object>> dict = new HashMap<Integer, Map<String, Object>>();	//List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
+		//loops while there is still more data to read
 		while (in.ready()) {
-
+			
+			//pulls the next line and splits it apart by the delimiter
 			String valString = in.readLine();
 			String[] val = valString.split("\t");
-
+			
+			//instantiates the object to be put in the list
 			Map<String, Object> map = new HashMap<String, Object>();
-
+			
+			//loops per amount of columns
 			for (int i = 0; i < col.length; i++) {
-
+				
+				//instantiates to be put into the map and checks if it is a numeric data type
 				Object value = val[i];
-
 				if (isDouble((String) value)) {
 					value = Double.parseDouble((String) value);
 				}
-
+				
+				//puts the object into the map
 				map.put(col[i], value);
-			}
+				
+			}	//end for
 
-			list.add(map);
-		}
+			//since map.get("StudentID") is a double, we cast it to an int so we can have a Integer Key for the outside map
+			int i = ((Double) map.get("StudentID")).intValue();
+			
+			//puts the map into the outside container
+			dict.put(i, map);	//list.add(map);
+			
+		}	//end while
 
+		//closes the BufferedReader
 		in.close();
 
-		return list;
+		//returns our data structure
+		return dict;
 	}
 
-	static List<Map<String, Object>> readCsv(String s) throws IOException {
+	/**reads csv file and puts it into a data structure
+	 * pre: s is a string that refers to a local csv file
+	 * post: returns a List holding Maps that contain each column as a key and each row as a Map object
+	 */
+	static Map<Integer, Map<String, Object>> readCsv(String s) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(new File(s)));
 		// starts the reader at the second line
 		in.readLine();
 
-		// reads the key names and stores them
+		// reads the key names (column names) and stores them
 		BufferedReader colIn = new BufferedReader(new FileReader(new File("Student.csv")));
 		String colString = colIn.readLine();
 		colIn.close();
 		String[] col = colString.split(",");
 
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
+		//instantiates the object being returned so we can add in objects
+		Map<Integer, Map<String, Object>> dict = new HashMap<Integer, Map<String, Object>>();
+		
+		//loops while there is still more data to read
 		while (in.ready()) {
+			
+			//pulls the next line and splits it apart by the delimiter
 			String valString = in.readLine();
 			String[] val = valString.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
+			//instantiates the object to be put in the list
 			Map<String, Object> map = new HashMap<String, Object>();
 
+			//loops per amount of columns
 			for (int i = 0; i < col.length; i++) {
 				
+				//instantiates to be put into the map and checks if it is a numeric data type
 				Object value = val[i];
-
 				if (isDouble((String) value)) {
 					value = Double.parseDouble((String) value);
 				}
 
+				//puts the object into the map
 				map.put(col[i], value);
 			}
 
-			list.add(map);
+			//since map.get("StudentID") is a double, we cast it to an int so we can have a Integer Key for the outside map
+			int i = ((Double) map.get("StudentID")).intValue();
+			
+			//puts the map into the list
+			dict.put(i, map);
+			
 		}
 
+		//closes the BufferedReader
 		in.close();
 
-		return list;
+		//returns our data structure
+		return dict;
 	}
 }
