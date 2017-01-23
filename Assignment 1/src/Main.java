@@ -38,11 +38,6 @@ public class Main {
 			sum += ((String) dict.get(key).get(col)).length();
 		}
 		
-		/* old version
-		 * for(int i = 0; i < dict.size(); i++){
-			sum += ((String) dict.get(i + 1000001).get(col)).length();
-		}*/
-		
 		return sum;
 	}
 	
@@ -56,12 +51,6 @@ public class Main {
 		for(Integer key : dict.keySet()){
 			sum += (double) dict.get(key).get(col);
 		}
-		
-		/* old code
-		 * for(int i = 0; i < dict.size(); i++){
-		 
-			sum += (double) dict.get(i + 1000001).get(col);
-		}*/
 		
 		return sum;
 	}
@@ -83,9 +72,9 @@ public class Main {
 	
 	/** reads a tab delimited text file and puts it into a data structure
 	 * pre: s is a string that refers to a URL which holds a text file
-	 * post: returns a List holding Maps that contain each column as a key and each row as a Map object
+	 * post: returns a Map holding Maps that contain each column as a key and each row as an object
 	 */
-	static Map<Integer, Map<String, Object>> readTxt(String s) throws IOException { 	//static List<Map<String, Object>> readTxt(String s) throws IOException {
+	static Map<Integer, Map<String, Object>> readTxt(String s) throws IOException {
 		URL url = new URL(s);
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		// starts the reader at the second line
@@ -98,8 +87,8 @@ public class Main {
 		String[] col = colString.split("\t");
 
 		//instantiates the object being returned so we can add in objects
-		Map<Integer, Map<String, Object>> dict = new HashMap<Integer, Map<String, Object>>();	//List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
+		Map<Integer, Map<String, Object>> dict = new HashMap<Integer, Map<String, Object>>();
+		
 		//loops while there is still more data to read
 		while (in.ready()) {
 			
@@ -128,7 +117,7 @@ public class Main {
 			int i = ((Double) map.get("StudentID")).intValue();
 			
 			//puts the map into the outside container
-			dict.put(i, map);	//list.add(map);
+			dict.put(i, map);
 			
 		}	//end while
 
@@ -141,7 +130,7 @@ public class Main {
 
 	/**reads csv file and puts it into a data structure
 	 * pre: s is a string that refers to a local csv file
-	 * post: returns a List holding Maps that contain each column as a key and each row as a Map object
+	 * post: returns a Map holding Maps that contain each column as a key and each row as an object
 	 */
 	static Map<Integer, Map<String, Object>> readCsv(String s) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(new File(s)));
