@@ -12,19 +12,27 @@ import java.util.Map;
 public class Main {
 
 	public static void main(String args[]) throws IOException {
-		List<Map<String, Object>> txt = readTxt();
-		List<Map<String, Object>> csv = readCsv();
+		//Instantiates each data structure
+		List<Map<String, Object>> txt = readTxt("http://mas.lvc.edu/cds280/Student.txt");
+		List<Map<String, Object>> csv = readCsv("Student.csv");
 
+		//gives the amount of rows (a.k.a. the size) of each data structure
 		System.out.println("Student.txt size: " + txt.size());
 		System.out.println("Student.csv size: " + csv.size());
 		
-		System.out.println("Student.txt sum of the GPA column: " + sum(txt));
-		System.out.println("Student.csv sum of the GPA column: " + sum(csv));
+		//sums the GPA column entries
+		System.out.println("Student.txt sum of the GPA column: " + sum(txt, "GPA"));
+		System.out.println("Student.csv sum of the GPA column: " + sum(csv, "GPA"));
 		
+		//sums the length of the Address.Street columns
 		System.out.println("Student.txt sum of the length of Address.Street column: " + columnLengthSum("Address.Street", txt));
 		System.out.println("Student.csv sum of the length of Address.Street column: " + columnLengthSum("Address.Street", csv));
 	}
 
+	/** method used to sum the column length of the data structure List<Map<String, Object>>
+	 * pre: col exists as a column in the specified dict data structure, and dict.size() > 0
+	 * post: return a sum of the lengths of the specified column
+	 */
 	static int columnLengthSum(String col, List<Map<String, Object>> dict){
 		int sum = 0;
 		for(int i = 0; i < dict.size(); i++){
@@ -34,10 +42,14 @@ public class Main {
 		return sum;
 	}
 	
-	static double sum(List<Map<String, Object>> dict){
+	/** creates a sum of of all the values in a column
+	 * pre: dict.size() > 0, and col is a numeric column that exists in dict
+	 * post: returns the sum of all numeric values in a column
+	 */
+	static double sum(List<Map<String, Object>> dict, String col){
 		double sum = 0;
 		for(int i = 0; i < dict.size(); i++){
-			sum += (double) dict.get(i).get("GPA");
+			sum += (double) dict.get(i).get(col);
 		}
 		
 		return sum;
@@ -55,8 +67,8 @@ public class Main {
 		return true;
 	}
 	
-	static List<Map<String, Object>> readTxt() throws IOException {
-		URL url = new URL("http://mas.lvc.edu/cds280/Student.txt");
+	static List<Map<String, Object>> readTxt(String s) throws IOException {
+		URL url = new URL(s);
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		// starts the reader at the second line
 		in.readLine();
@@ -95,8 +107,8 @@ public class Main {
 		return list;
 	}
 
-	static List<Map<String, Object>> readCsv() throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader(new File("Student.csv")));
+	static List<Map<String, Object>> readCsv(String s) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader(new File(s)));
 		// starts the reader at the second line
 		in.readLine();
 
@@ -110,7 +122,7 @@ public class Main {
 
 		while (in.ready()) {
 			String valString = in.readLine();
-			String[] val = valString.split(",", col.length);
+			String[] val = valString.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
 			Map<String, Object> map = new HashMap<String, Object>();
 
