@@ -10,9 +10,17 @@ import java.util.Map;
 public class Main {
 
 	public static void main(String args[]) throws IOException {
+		
+		//txt reader
+		URL url = new URL("http://mas.lvc.edu/cds280/Student.txt");
+		BufferedReader txtReader = new BufferedReader(new InputStreamReader(url.openStream()));
+		
+		//csv reader
+		BufferedReader csvReader = new BufferedReader(new FileReader(new File("Student.csv")));
+		
 		//Instantiates each data structure
-		Map<Integer, Map<String, Object>> txt = readTxt("http://mas.lvc.edu/cds280/Student.txt");
-		Map<Integer, Map<String, Object>> csv = readCsv("Student.csv");
+		Map<Integer, Map<String, Object>> txt = readTxt(txtReader);
+		Map<Integer, Map<String, Object>> csv = readCsv(csvReader);
 
 		//gives the amount of rows (a.k.a. the size) of each data structure
 		System.out.println("Student.txt size: " + txt.size());
@@ -71,19 +79,13 @@ public class Main {
 	}
 	
 	/** reads a tab delimited text file and puts it into a data structure
-	 * pre: s is a string that refers to a URL which holds a text file
+	 * pre: in is a reader that holds reference to a .txt file delimited by tabs
 	 * post: returns a Map holding Maps that contain each column as a key and each row as an object
 	 */
-	static Map<Integer, Map<String, Object>> readTxt(String s) throws IOException {
-		URL url = new URL(s);
-		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-		// starts the reader at the second line
-		in.readLine();
-
+	static Map<Integer, Map<String, Object>> readTxt(BufferedReader in) throws IOException {
+		
 		// reads the key names (column names) and stores them
-		BufferedReader colIn = new BufferedReader(new InputStreamReader(url.openStream()));
-		String colString = colIn.readLine();
-		colIn.close();
+		String colString = in.readLine();
 		String[] col = colString.split("\t");
 
 		//instantiates the object being returned so we can add in objects
@@ -129,18 +131,13 @@ public class Main {
 	}
 
 	/**reads csv file and puts it into a data structure
-	 * pre: s is a string that refers to a local csv file
+	 * pre: in is a BufferedReader that references a .csv file
 	 * post: returns a Map holding Maps that contain each column as a key and each row as an object
 	 */
-	static Map<Integer, Map<String, Object>> readCsv(String s) throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader(new File(s)));
-		// starts the reader at the second line
-		in.readLine();
+	static Map<Integer, Map<String, Object>> readCsv(BufferedReader in) throws IOException {
 
 		// reads the key names (column names) and stores them
-		BufferedReader colIn = new BufferedReader(new FileReader(new File("Student.csv")));
-		String colString = colIn.readLine();
-		colIn.close();
+		String colString = in.readLine();
 		String[] col = colString.split(",");
 
 		//instantiates the object being returned so we can add in objects
