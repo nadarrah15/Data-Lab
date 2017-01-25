@@ -19,7 +19,8 @@ public class Main {
 		
 		//txt reader
 		URL url = new URL("http://mas.lvc.edu/cds280/Student.txt");
-		BufferedReader txtReader = new BufferedReader(new InputStreamReader(url.openStream()));
+		BufferedReader txtReader = new BufferedReader(new InputStreamReader(url.openStream()));	//BufferedReader txtReader = new BufferedReader(new FileReader(new File("Student.txt")));
+		
 		
 		//csv reader
 		BufferedReader csvReader = new BufferedReader(new FileReader(new File("Student.csv")));
