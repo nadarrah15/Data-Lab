@@ -1,3 +1,9 @@
+/**
+ * 	Written by: Nathan Darrah
+ *	Assignment for CDS 280 Introductory Data Analysis Lab
+ *	taught at Lebanon Valley College
+ */
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -64,12 +70,14 @@ public class Main {
 	}
 	
 	/** checks to see if some string can be written as a double
+	 * code from this method found at http://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java
+	 * by user CraigTP
 	 * post: returns whether a string can be parsed to a double or not
 	 */
 	static boolean isDouble(String str) {
 	
 		try {
-			double d = Double.parseDouble(str);
+			Double.parseDouble(str);
 		} 
 		catch (NumberFormatException e) {
 			return false;
@@ -148,6 +156,11 @@ public class Main {
 			
 			//pulls the next line and splits it apart by the delimiter
 			String valString = in.readLine();
+			
+			/*code found for the regex expression found at 
+			* http://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
+			* by user Bart Kiers
+			*/
 			String[] val = valString.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
 			//instantiates the object to be put in the list
