@@ -10,7 +10,7 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException{
 		CSVReader in = new CSVReader(new FileReader(new File("Student.csv")), ',' , '"');
-		DataOutputStream out = new DataOutputStream(new FileOutputStream("out.txt"));
+		DataOutputStream out = new DataOutputStream(new FileOutputStream("out.txt", true));
 		
 		while(true){
 			try{
@@ -19,6 +19,7 @@ public class Main {
 					out.writeUTF(s);
 				}
 			} catch(Exception e){
+				e.printStackTrace(System.out);
 				break;
 			}
 		}
