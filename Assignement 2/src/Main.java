@@ -1,5 +1,7 @@
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -11,7 +13,8 @@ import com.opencsv.CSVReader;
 public class Main {
 
 	public static void main(String[] args) throws IOException{
-		CSVReader in = new CSVReader(new FileReader(new File("Student.csv")), ',' , '"');
+		File file = new File("Student.csv");
+		CSVReader in = new CSVReader(new FileReader(file), ',' , '"');
 		DataOutputStream out = new DataOutputStream(new FileOutputStream("out.txt"));
 		Iterator<String[]> it = in.iterator();
 		
@@ -21,9 +24,14 @@ public class Main {
 			
 			if(arr == null) break;
 			for(String s: arr){
-				out.writeChars(s);
+				out.writeUTF(s);
 			}	
 		}
+		
+		DataInputStream data = new DataInputStream(new FileInputStream(file));
+		String s = data.readUTF();
+		
+		
 	}
 	
 }
