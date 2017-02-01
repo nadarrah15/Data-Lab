@@ -13,7 +13,7 @@ public class Main {
 	public static void main(String[] args) throws IOException{
 		File file = new File("Student.csv");
 		CSVReader in = new CSVReader(new FileReader(file), ',' , '"');
-		DataOutputStream out = new DataOutputStream(new FileOutputStream("out.txt"));
+		DataOutputStream out = new DataOutputStream(new FileOutputStream("out.bin"));
 		Iterator<String[]> it = in.iterator();
 		
 		
