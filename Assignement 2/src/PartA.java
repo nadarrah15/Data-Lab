@@ -33,7 +33,7 @@ public class PartA {
 			}	
 		}
 		
-		DataInputStream data = new DataInputStream(new FileInputStream(file));
+		/*DataInputStream data = new DataInputStream(new FileInputStream(file));
 		String s = data.readLine();
 		CSVParser parser = new CSVParser();
 		
@@ -65,7 +65,7 @@ public class PartA {
 		
 		System.out.println(dict.size());
 		System.out.println(sum(dict, "GPA"));
-		System.out.println(columnLengthSum("Address.Street", dict));
+		System.out.println(columnLengthSum("Address.Street", dict));*/
 	}
 	
 	/** method used to sum the column length of the data structure Map<Number, Map<String, Object>>
