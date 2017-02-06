@@ -1,15 +1,10 @@
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
 
 public class PartA {
@@ -18,54 +13,8 @@ public class PartA {
 		File file = new File("Student.csv");
 		CSVReader in = new CSVReader(new FileReader(file));
 		DataOutputStream out = new DataOutputStream(new FileOutputStream("out.bin"));
-		Iterator<String[]> it = in.iterator();
-		
-		while(it.hasNext()){
-			String[] arr = it.next();
-			
-			if(arr == null) break;
-			for(String s: arr){
-				if(isDouble(s))
-					out.writeDouble(Double.parseDouble(s));
-				else
-					out.writeChars(s);
-				
-			}	
-		}
-		
-		/*DataInputStream data = new DataInputStream(new FileInputStream(file));
-		String s = data.readLine();
-		CSVParser parser = new CSVParser();
-		
-		String[] col = parser.parseLine(s);
-		Map<Number, Map<String, Object>> dict = new HashMap<Number, Map<String, Object>>();
-		
-		//start the first line
-		s = data.readLine();
-		while(s != null){
-			Map<String, Object> map = new HashMap<String, Object>();
-			String[] arr = parser.parseLine(s);
-			for(int i = 0; i < col.length; i++){
-				Object o;
-				if(isDouble(arr[i])){
-					o = Double.parseDouble(arr[i]);
-				}
-				else{
-					o = arr[i];
-				}
-				
-				map.put(col[i], o);
-			}
-			
-			dict.put(((Number) map.get("StudentID")), map);
-			
-			s = data.readLine();
-		}
 		
 		
-		System.out.println(dict.size());
-		System.out.println(sum(dict, "GPA"));
-		System.out.println(columnLengthSum("Address.Street", dict));*/
 	}
 	
 	/** method used to sum the column length of the data structure Map<Number, Map<String, Object>>
