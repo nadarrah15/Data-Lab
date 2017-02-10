@@ -47,7 +47,7 @@ public class PartA {
 	
 	static boolean isDouble(String str) {
 		
-		try {
+		try{
 			Double.parseDouble(str);
 		} 
 		catch (NumberFormatException e) {
