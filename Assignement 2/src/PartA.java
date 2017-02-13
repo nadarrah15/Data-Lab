@@ -4,26 +4,67 @@
  * 	February, 2017
  */
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
 import com.opencsv.CSVReader;
 
 public class PartA {
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws Exception{
 		
 		CSVReader in = new CSVReader(new FileReader(new File("Student.csv")));
 		DataOutputStream out = new DataOutputStream(new FileOutputStream("out.bin"));
 		
-		Map<Integer, Map<String, Object>> dict = new HashMap<Integer, Map<String, Object>>();
+		writeFile(in, out);
+		
+		DataInputStream stream = new DataInputStream(new FileInputStream(new File("out.bin")));
+		
+		readFile(stream);
+	}
+	
+	static void readFile(DataInputStream stream) throws IOException {
+
+		int rows = stream.readInt();
+		int cols = stream.readInt();
+		int[] colType = new int[cols];
+		String[] col = new String[cols];
+		
+		//read in the column types
+		for(int i = 0; i < cols; i++)
+			colType[i] = stream.readInt();
+		
+		//read in the column names
+		for(int i = 0; i < cols; i++)
+			col[i] = stream.readUTF();
+		
+		//new container
+		ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		
+		for(int i = 0; i < rows - 2; i++){
+			Map<String, Object> map = new HashMap<String, Object>();
+			for(int j = 0; j < cols; j++){
+				if(colType[j] == 0)
+					map
+			}
+		}
+	}
+
+	static void writeFile(CSVReader in, DataOutputStream out) throws Exception{
+Map<Integer, Map<String, Object>> dict = new HashMap<Integer, Map<String, Object>>();
 		
 		//the column names are in the first line
 		String[] col = in.readNext();
@@ -67,12 +108,17 @@ public class PartA {
 			out.writeUTF(s);
 		
 		for(Map.Entry<Integer, Map<String, Object>> map: dict.entrySet()){
-			
-			
 			for(Map.Entry<String, Object> innerMap: dict.get(map.getKey()).entrySet()){
-				
+				if(innerMap.getValue() instanceof String)
+					out.writeUTF((String) innerMap.getValue());
+				else if(innerMap.getValue() instanceof Double)
+					out.writeDouble((Double) innerMap.getValue());
+				else
+					throw new Exception("type not found");
 			}
 		}
+		
+		out.close();
 	}
 	
 	/** method used to sum the column length of the data structure Map<Number, Map<String, Object>>
