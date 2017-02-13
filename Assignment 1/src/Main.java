@@ -1,7 +1,7 @@
 /**
- * 	Written by: Nathan Darrah
- *	Assignment for CDS 280 Introductory Data Analysis Lab
- *	taught at Lebanon Valley College
+ * 	Nathan Darrah, Lebanon Valley College class of '19
+ *	Assignment for CDS-280 Introductory Data Analysis Lab
+ *	January, 2017
  */
 
 import java.io.BufferedReader;

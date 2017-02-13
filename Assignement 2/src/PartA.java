@@ -1,3 +1,9 @@
+/**
+ * 	Nathan Darrah, Lebanon Valley College class of '19
+ * 	Project for CDS-280 Introductory Data Analysis Lab
+ * 	February, 2017
+ */
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
