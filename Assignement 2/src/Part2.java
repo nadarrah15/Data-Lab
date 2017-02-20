@@ -5,29 +5,28 @@
  */
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PartA {
+public class Part2 {
 
 	public static void main(String[] args) throws Exception{
 		
 		BufferedReader in = new BufferedReader(new FileReader(new File("Student.csv")));
-		DataOutputStream out = new DataOutputStream(new FileOutputStream("out.bin"));
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("out.bin"));
 		
 		ArrayList<Map<String, Object>> map = readCsv(in);
 		writeFile(map, out);
 		
-		DataInputStream stream = new DataInputStream(new FileInputStream(new File("out.bin")));
+		ObjectInputStream stream = new ObjectInputStream(new FileInputStream(new File("out.bin")));
 		
 		readFile(stream);
 	}
@@ -81,110 +80,27 @@ public class PartA {
 		return dict;
 	}
 	
-	static void readFile(DataInputStream stream) throws IOException {
-
-		int rows = stream.readInt();
-		int cols = stream.readInt();
-		int[] colType = new int[cols];
-		String[] col = new String[cols];
+	static void readFile(ObjectInputStream stream) throws ClassNotFoundException, IOException {
 		
-		//read in the column types
-		for(int i = 0; i < cols; i++)
-			colType[i] = stream.readInt();
+		ArrayList<Map<String, Object>> arr = (ArrayList<Map<String, Object>>) stream.readObject();
 		
-		//read in the column names
-		for(int i = 0; i < cols; i++)
-			col[i] = stream.readUTF();
-		
-		//new container
-		ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		
-		for(int i = 0; i < rows; i++){
-			Map<String, Object> map = new HashMap<String, Object>();
-			for(int j = 0; j < cols; j++){
-				if(colType[j] == 0)
-					map.put(col[j], stream.readUTF());
-				else if(colType[j] == 1)
-					map.put(col[j], stream.readDouble());
-			}
-			list.add(map);
-		}
-		
-		for(Map.Entry<String, Object> map: list.get(0).entrySet()){
-			System.out.print(map.getKey() + " ");
-		}
+		//print out the columns
+		for(Map.Entry<String, Object> entry: arr.get(0).entrySet())
+			System.out.print(entry.getKey() + " ");
 		
 		System.out.println();
 		
-		for(int i = 0; i < list.size(); i++){
-			for(Map.Entry<String, Object> map: list.get(i).entrySet()){
-				System.out.print(map.getValue() + " ");
-			}
+		//print out the values
+		for(int i = 0; i < arr.size(); i++){
+			for(Map.Entry<String, Object> entry: arr.get(i).entrySet())
+				System.out.print(entry.getValue() + " ");
+			
 			System.out.println();
 		}
 	}
 
-	static void writeFile(ArrayList<Map<String, Object>> arr, DataOutputStream out) throws Exception{
-
-		long length = 0;
-		
-		//the column names are in the first line
-		int count = 0;
-		String[] col = new String[arr.get(0).keySet().size()];
-		for(String s: arr.get(0).keySet()){
-			col[count] = s;
-			count++;
-		}
-		
-		//holding column type, 0 is string, 1 is number
-		int[] colType = new int[col.length];
-		Arrays.fill(colType, 0);
-		
-		Map<String, Object> tempMap = arr.get(0);
-		count = 0;
-		for(Map.Entry<String, Object> entry: tempMap.entrySet()){
-			if(isDouble("" + entry.getValue()))
-				colType[count] = 1;
-			else colType[count] = 0;
-			
-			count++;
-		}
-		
-		//place the amount of rows and columns
-		out.writeInt(arr.size());		//rows
-		length++;
-		out.writeInt(col.length);		//columns
-		length++;
-		
-		//writes in the column types
-		for(int i: colType){
-			out.writeInt(i);
-			length++;
-		}
-		
-		//writes in the column names
-		for(String s: col){
-			out.writeUTF(s);
-			length++;
-		}
-		
-		//write in the rest of the values
-		for(int i = 0; i < arr.size(); i++){
-			Map<String, Object> map = arr.get(i);
-			for(int j = 0; j < col.length; j++){
-				if(colType[j] == 0){
-					out.writeUTF((String) map.get(col[j]));
-					length++;
-				}
-				else{
-					out.writeDouble((double) map.get(col[j]));
-					length++;
-				}
-			}
-		}
-		
-		out.writeLong(length);
-		
+	static void writeFile(ArrayList<Map<String, Object>> arr, ObjectOutputStream out) throws IOException{
+		out.writeObject(arr);
 		out.close();
 	}
 	
@@ -228,3 +144,4 @@ public class PartA {
 		return true;
 	}
 }
+
