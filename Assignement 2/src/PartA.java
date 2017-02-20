@@ -107,7 +107,7 @@ public class PartA {
 		//new container
 		ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		
-		for(int i = 0; i < rows - 1; i++){
+		for(int i = 0; i < rows; i++){
 			Map<String, Object> map = new HashMap<String, Object>();
 			for(int j = 0; j < cols; j++){
 				if(colType[j] == 0)
@@ -120,7 +120,7 @@ public class PartA {
 		
 		for(int i = 0; i < list.size(); i++){
 			for(Map.Entry<String, Object> map: list.get(i).entrySet()){
-				System.out.print(map.getValue());
+				System.out.print(map.getValue() + " ");
 			}
 			System.out.println();
 		}
@@ -173,8 +173,15 @@ public class PartA {
 		//write in the rest of the values
 		for(int i = 0; i < arr.size(); i++){
 			Map<String, Object> map = arr.get(i);
-			for(Map.Entry<String, Object> entry: map.entrySet()){
-				
+			for(int j = 0; j < col.length; j++){
+				if(colType[j] == 0){
+					out.writeUTF((String) map.get(col[j]));
+					length++;
+				}
+				else{
+					out.writeDouble((double) map.get(col[j]));
+					length++;
+				}
 			}
 		}
 		
