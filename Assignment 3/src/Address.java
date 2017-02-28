@@ -14,4 +14,20 @@ public class Address {
 	public String toString(){
 		return street + ", " + city + ", " + state + " " + zip;
 	}
+	
+	public String getStreet(){
+		return street;
+	}
+	
+	public String getCity(){
+		return city;
+	}
+	
+	public String getState(){
+		return state;
+	}
+	
+	public int getZip(){
+		return zip;
+	}
 }

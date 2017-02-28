@@ -1,13 +1,14 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import org.json.simple.JSONObject;
 
 public class Main {
 
@@ -15,17 +16,57 @@ public class Main {
 		
 		BufferedReader in = new BufferedReader(new FileReader(new File("Student.csv")));
 		
-		ArrayList<Map<String, Object>> map = readCsv(in);
+		Map<Integer, Map<String, Object>> dict = readCsv(in);
+		
+		Address address = (Address) dict.get(dict.keySet().iterator().next()).get("Address");
+		JSONObject jsonAddress = addressToJSONObject(address);
+		address = readAddress(jsonAddress);
+		System.out.println(address);
+		
+		System.out.println();
+		
+		FileWriter out = new FileWriter(new File("student_json.json"));
+		JSONObject jsonDict = dictToJSONObject(dict);
+		out.write(jsonDict.toJSONString());
+		out.close();
+		
+		Map<Integer, Map<String, Object>> dict2 = readDict(jsonDict);
+		for(Integer i: dict2.keySet())
+			System.out.println(i + ": " + dict2.get(i));
+		
+		System.out.println();
+		
+		Iterator<Integer> it = dict.keySet().iterator();
+		JSONObject jsonRecord1 = recordToJSONObject(dict.get(it.next()));
+		out = new FileWriter(new File("record1_json.json"));
+		out.write(jsonRecord1.toJSONString());
+		out.close();
+		
+		Map<String, Object> record = readRecord(jsonRecord1);
+		for(String s : record.keySet())
+			System.out.println(s + ": " + record.get(s));
 	}
 	
-	static ArrayList<Map<String, Object>> readCsv(BufferedReader in) throws IOException {
+	static Address readAddress(JSONObject json){
+		return new Address((String) json.get("Street"), (String) json.get("City"), (String) json.get("State"), (int) json.get("Zip"));
+	}
+	
+	static Map<String, Object> readRecord(JSONObject json){
+		return (Map<String, Object>) json;	
+	}
+	
+	static Map<Integer, Map<String , Object>> readDict(JSONObject json){
+		return (Map<Integer, Map<String, Object>>) json;
+	}
+	
+	static Map<Integer, Map<String, Object>> readCsv(BufferedReader in) throws IOException {
 
 		// holds column names
 		ArrayList<String> colNames = new ArrayList<String>();
 		for(String s : in.readLine().split(","))
 			colNames.add(s);
 		
-		ArrayList<Map<String, Object>> dict = new ArrayList<Map<String, Object>>();
+		Map<Integer, Map<String, Object>> dict = new HashMap<Integer, Map<String, Object>>();
 		
 		while(in.ready()){
 			
@@ -33,18 +74,50 @@ public class Main {
 			String[] input = in.readLine().split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 			
 			//map to be added in dict
-			Map<String, Object> map = new HashMap<String, Object>();
+			Map<String, Object> record = new HashMap<String, Object>();
 			
-			Address address = new Address(input[colNames.indexOf("Address.Street")], input[colNames.indexOf("Address.city")], 
+			Address address = new Address(input[colNames.indexOf("Address.Street")], input[colNames.indexOf("Address.City")], 
 					input[colNames.indexOf("Address.State")], Integer.parseInt(input[colNames.indexOf("Address.Zip")]));
 			
 			 for(int i = 0; i < input.length; i++){
 				 //if the column name does not contain an address field, add the item to the map
-				 if(!colNames.get(i).contains("Address"))
-					 map.
+				 String value = input[i];
+				 if(!colNames.get(i).contains("Address")){
+					 if(value.matches("(\\d+)([.])(\\d+)"))
+						 record.put(colNames.get(i), Double.parseDouble(value));
+					 else if(value.matches("\\d+")){
+						 record.put(colNames.get(i), Long.parseLong(value));
+					 }
+					 else
+						 record.put(colNames.get(i), input[i]);
+				 }
 			 }
+			 
+			 record.put("Address", address);
+			 
+			 int index = colNames.indexOf("StudentID");
+			 
+			 dict.put(Integer.parseInt(input[index]), record);
 		}
 		
 		return dict;
+	}
+	
+	static JSONObject addressToJSONObject(Address address){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("Street", address.getStreet());
+		map.put("City", address.getCity());
+		map.put("State", address.getState());
+		map.put("Zip", address.getZip());
+		
+		return new JSONObject(map);
+	}
+	
+	static JSONObject recordToJSONObject(Map<String, Object> record){
+		return new JSONObject(record);
+	}
+	
+	static JSONObject dictToJSONObject(Map<Integer, Map<String, Object>> dict){
+		return new JSONObject(dict);
 	}
 }
