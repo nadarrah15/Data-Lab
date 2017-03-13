@@ -30,7 +30,16 @@ public class Main {
 		in = new BufferedReader(new FileReader(new File("student_json.json")));
 		JSONParser parser = new JSONParser();
 		
+<<<<<<< HEAD
 		Map<Integer, Map<String, Object>> dictIn = readDict((JSONObject) parser.parse(in.readLine()));
+=======
+		//The parser is broken. if it worked, I would be able to read the dictionary back in as a JSONObject and do the following to read the JSONObject
+		//into a map
+		
+		/*
+		 * Map<Integer, Map<String, Object>> dictIn = readDict((JSONObject) parser.parse(in.readLine()));
+		 */
+>>>>>>> branch 'master' of https://github.com/nadarrah15/Data-Lab.git
 		
 		Iterator<Integer> it = dict.keySet().iterator();
 		JSONObject jsonRecord1 = recordToJSONObject(dict.get(it.next()));
@@ -40,7 +49,16 @@ public class Main {
 		
 		in = new BufferedReader(new FileReader(new File("record1_json.json")));
 		
+<<<<<<< HEAD
 		Map<String, Object> record = readRecord((JSONObject) parser.parse(in));
+=======
+		//The parser is broken. If it worked as intended, I would be able to read the record in as a JSONObject and do the following to read the JSONObject 
+		//into our data structure that holds records
+		
+		/*
+		 * Map<String, Object> record = readRecord((JSONObject) parser.parse(in));
+		 */
+>>>>>>> branch 'master' of https://github.com/nadarrah15/Data-Lab.git
 	}
 	
 	static Address readAddress(JSONObject json){
