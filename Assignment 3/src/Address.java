@@ -12,7 +12,7 @@ public class Address {
 	}
 	
 	public String toString(){
-		return street + ", " + city + ", " + state + " " + zip;
+		return "\"" + street + ", " + city + ", " + state + " " + zip + "\"";
 	}
 	
 	public String getStreet(){

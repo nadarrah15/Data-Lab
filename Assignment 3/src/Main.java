@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class Main {
 
@@ -20,21 +21,16 @@ public class Main {
 		
 		Address address = (Address) dict.get(dict.keySet().iterator().next()).get("Address");
 		JSONObject jsonAddress = addressToJSONObject(address);
-		address = readAddress(jsonAddress);
-		System.out.println(address);
-		
-		System.out.println();
 		
 		FileWriter out = new FileWriter(new File("student_json.json"));
 		JSONObject jsonDict = dictToJSONObject(dict);
 		out.write(jsonDict.toJSONString());
 		out.close();
 		
-		Map<Integer, Map<String, Object>> dict2 = readDict(jsonDict);
-		for(Integer i: dict2.keySet())
-			System.out.println(i + ": " + dict2.get(i));
+		in = new BufferedReader(new FileReader(new File("student_json.json")));
+		JSONParser parser = new JSONParser();
 		
-		System.out.println();
+		Map<Integer, Map<String, Object>> dictIn = readDict((JSONObject) parser.parse(in.readLine()));
 		
 		Iterator<Integer> it = dict.keySet().iterator();
 		JSONObject jsonRecord1 = recordToJSONObject(dict.get(it.next()));
@@ -42,9 +38,9 @@ public class Main {
 		out.write(jsonRecord1.toJSONString());
 		out.close();
 		
-		Map<String, Object> record = readRecord(jsonRecord1);
-		for(String s : record.keySet())
-			System.out.println(s + ": " + record.get(s));
+		in = new BufferedReader(new FileReader(new File("record1_json.json")));
+		
+		Map<String, Object> record = readRecord((JSONObject) parser.parse(in));
 	}
 	
 	static Address readAddress(JSONObject json){
