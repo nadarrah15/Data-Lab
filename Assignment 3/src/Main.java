@@ -32,6 +32,12 @@ public class Main {
 		
 		Map<Integer, Map<String, Object>> dictIn = readDict((JSONObject) parser.parse(in.readLine()));
 
+		for(Map.Entry<Integer, Map<String, Object>> entry: dictIn.entrySet()){
+			System.out.println(entry.getValue());
+		}
+		
+		System.out.println();
+		
 		Iterator<Integer> it = dict.keySet().iterator();
 		JSONObject jsonRecord1 = recordToJSONObject(dict.get(it.next()));
 		out = new FileWriter(new File("record1_json.json"));
@@ -41,6 +47,8 @@ public class Main {
 		in = new BufferedReader(new FileReader(new File("record1_json.json")));
 
 		Map<String, Object> record = readRecord((JSONObject) parser.parse(in));
+		
+		System.out.println(record);
 	}
 	
 	static Address readAddress(JSONObject json){
