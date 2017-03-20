@@ -1,8 +1,5 @@
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -10,8 +7,8 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.simple.JSONObject;
 import org.mariadb.jdbc.MariaDbDataSource;
+
 
 public class Main {
 
