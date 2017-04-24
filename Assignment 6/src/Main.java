@@ -27,9 +27,9 @@ public class Main {
 		System.out.printf("%-20s%-20s%-20s%-20s%-20s%n%n", "Count: " + stats.getCount(), "Sum: " + stats.getSum(), "Minimum: " + stats.getMin(), "Average: " + stats.getAverage(), "Maximum: " + stats.getMax());
 		
 		dict.stream().collect(Collectors.groupingBy((Map<String, Object> map) -> map.get("Major")));
+		
+		
 	}
-	
-	
 	
 	//from assignment 3 modified a bit
 	static ArrayList<Map<String, Object>> readCsv(BufferedReader in) throws IOException {
