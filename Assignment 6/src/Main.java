@@ -10,31 +10,44 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
+import org.omg.Messaging.SyncScopeHelper;
+
 public class Main {
 
 	public static void main(String[] args)throws Exception{
 		BufferedReader in = new BufferedReader(new FileReader(new File("Student.csv")));
 		ArrayList<Map<String, Object>> dict = readCsv(in);
 		
+		System.out.println("All GPAs:");
 		dict.stream().forEach((Map<String, Object> map) -> System.out.print(map.get("GPA") + " "));
 		
-		System.out.println("\n");
-
-		dict.stream().filter((Map<String, Object> map) -> map.get("Major").equals("BIO")).forEach((Map<String, Object> map) -> System.out.print(map.get("GPA") + " "));
+		System.out.println("\n\nBIO GPAs:");
+		dict.stream().filter((Map<String, Object> map) -> map.get("Major").equals("BIO"))
+				.forEach((Map<String, Object> map) -> System.out.print(map.get("GPA") + " "));
 		
-		System.out.println("\n");
-		
-		DoubleSummaryStatistics stats = dict.stream().filter((Map<String, Object> map) -> !map.get("Major").equals("MAS")).collect(Collectors.summarizingDouble((Map<String, Object> map) -> (Double) map.get("GPA")));
-		
-		System.out.printf("%-20s%-20s%-20s%-20s%-20s%n%n", "Count: " + stats.getCount(), "Sum: " + stats.getSum(), "Minimum: " + stats.getMin(), "Average: " + stats.getAverage(), "Maximum: " + stats.getMax());
-		
+		System.out.println("\n\nNon-Math Major Statistics");
+		DoubleSummaryStatistics stats = dict.stream().filter((Map<String, Object> map) -> !map.get("Major").equals("MAS"))
+				.collect(Collectors.summarizingDouble((Map<String, Object> map) -> (Double) map.get("GPA")));
+		System.out.println("Count: " + stats.getCount());
+		System.out.println("Sum: " + stats.getSum());
+		System.out.println("Minimum: " + stats.getMin());
+		System.out.println("Average: " + stats.getAverage());
+		System.out.println("Maximum: " + stats.getMax() + "\n");
 //		dict.stream().collect(Collectors.toMap(
 //				(Map<String, Object> map) -> map.get("Major"),
 //				(Map<String, Object> map) -> map.get("GPA"),
 //				(gpa1, gpa2) -> ((double) gpa1) + ((double) gpa2)
 //				));
 		Map<Object, List<Map<String, Object>>> supMap = dict.stream().collect(Collectors.groupingBy((Map<String, Object> map) -> map.get("Major")));
-		System.out.println(supMap);
+		
+		System.out.println("Average GPA by Major:");
+		for(Map.Entry<Object, List<Map<String, Object>>> key: supMap.entrySet()){
+			DoubleSummaryStatistics stats2 = key.getValue().stream().collect(Collectors.summarizingDouble((Map<String, Object> map) -> (Double) map.get("GPA")));
+			System.out.println(key.getKey() + ": " + stats2.getAverage());
+		}
+		
 		
 	}
 	
@@ -56,7 +69,8 @@ public class Main {
 			//map to be added in dict
 			Map<String, Object> record = new HashMap<String, Object>();
 			
-			Address address = new Address(input[colNames.indexOf("Address.Street")], input[colNames.indexOf("Address.City")], input[colNames.indexOf("Address.State")], Integer.parseInt(input[colNames.indexOf("Address.Zip")]));
+			Address address = new Address(input[colNames.indexOf("Address.Street")], input[colNames.indexOf("Address.City")], 
+					input[colNames.indexOf("Address.State")], Integer.parseInt(input[colNames.indexOf("Address.Zip")]));
 			
 			 for(int i = 0; i < input.length; i++){
 				 //if the column name does not contain an address field, add the item to the map
