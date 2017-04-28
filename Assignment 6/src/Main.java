@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -26,8 +28,13 @@ public class Main {
 		
 		System.out.printf("%-20s%-20s%-20s%-20s%-20s%n%n", "Count: " + stats.getCount(), "Sum: " + stats.getSum(), "Minimum: " + stats.getMin(), "Average: " + stats.getAverage(), "Maximum: " + stats.getMax());
 		
-		dict.stream().collect(Collectors.groupingBy((Map<String, Object> map) -> map.get("Major")));
-		
+//		dict.stream().collect(Collectors.toMap(
+//				(Map<String, Object> map) -> map.get("Major"),
+//				(Map<String, Object> map) -> map.get("GPA"),
+//				(gpa1, gpa2) -> ((double) gpa1) + ((double) gpa2)
+//				));
+		Map<Object, List<Map<String, Object>>> supMap = dict.stream().collect(Collectors.groupingBy((Map<String, Object> map) -> map.get("Major")));
+		System.out.println(supMap);
 		
 	}
 	
